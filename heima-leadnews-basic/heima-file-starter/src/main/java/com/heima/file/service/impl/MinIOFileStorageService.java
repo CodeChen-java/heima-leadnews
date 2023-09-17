@@ -12,6 +12,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 import org.springframework.util.StringUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -131,14 +133,30 @@ public class MinIOFileStorageService implements FileStorageService {
      *
      */
     @Override
-    public InputStream downLoadFile(String pathUrl) {
+    public byte[] downLoadFile(String pathUrl)  {
+        String key = pathUrl.replace(minIOConfigProperties.getEndpoint()+"/","");
+        int index = key.indexOf(separator);
+        String bucket = key.substring(0,index);
+        String filePath = key.substring(index+1);
         InputStream inputStream = null;
         try {
-            inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(minIOConfigProperties.getBucket()).object(pathUrl).build());
+            inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(minIOConfigProperties.getBucket()).object(filePath).build());
         } catch (Exception e) {
             log.error("minio down file error.  pathUrl:{}",pathUrl);
             e.printStackTrace();
         }
-        return inputStream;
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buff = new byte[100];
+        int rc = 0;
+        while (true) {
+            try {
+                if (!((rc = inputStream.read(buff, 0, 100)) > 0)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            byteArrayOutputStream.write(buff, 0, rc);
+        }
+        return byteArrayOutputStream.toByteArray();
     }
 }

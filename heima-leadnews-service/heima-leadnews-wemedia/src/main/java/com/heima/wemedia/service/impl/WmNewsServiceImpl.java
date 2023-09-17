@@ -21,6 +21,7 @@ import com.heima.utils.thread.WmThreadLocalUtils;
 import com.heima.wemedia.mapper.WmMaterialMapper;
 import com.heima.wemedia.mapper.WmNewsMapper;
 import com.heima.wemedia.mapper.WmNewsMaterialMapper;
+import com.heima.wemedia.service.WmNewsAutoScanService;
 import com.heima.wemedia.service.WmNewsService;
 
 import io.swagger.models.auth.In;
@@ -78,6 +79,8 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
         return responseResult;
     }
 
+    @Autowired
+    private WmNewsAutoScanService autoScanService;
     @Override
     public ResponseResult submitNews(WmNewsDto wmNewsDto) throws InvocationTargetException, IllegalAccessException {
         if(wmNewsDto == null || wmNewsDto.getContent()==null) {
@@ -110,6 +113,8 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
 
         //保存文章封面图片与素材的关系 如果当前布局是自动 需要匹配封面图片
         saveRelativeInfoForCover(wmNewsDto, wmNews, materials);
+
+        autoScanService.autoScanWmNews(wmNews.getId());
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 

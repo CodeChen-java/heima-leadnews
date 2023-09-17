@@ -10,3 +10,8 @@ spring:
       config:
         server-addr: 192.168.27.128:8848
         file-extension: yml
+
+aliyun:
+  accessKeyId: LTAI5tA9nj4c3wbXE9jV8Qjt
+  secret: E9GpY5TSgnSREeliEF57wuP3rQyaVi
+  scenes: terrorism

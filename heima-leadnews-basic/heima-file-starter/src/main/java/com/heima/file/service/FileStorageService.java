@@ -43,6 +43,6 @@ public interface FileStorageService {
      * @return  文件流
      *
      */
-    public InputStream downLoadFile(String pathUrl);
+    public byte[] downLoadFile(String pathUrl);
 
 }
