@@ -15,3 +15,7 @@ aliyun:
   accessKeyId: LTAI5tA9nj4c3wbXE9jV8Qjt
   secret: E9GpY5TSgnSREeliEF57wuP3rQyaVi
   scenes: terrorism
+
+tess4j:
+  data-path: E:\tesseract
+  language: chi_sim
